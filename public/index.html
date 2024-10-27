@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Test</title>
+</head>
+<body>
+    <h1>ChatGPT Test</h1>
+    <input type="text" id="message" placeholder="Enter your message">
+    <button id="send">Send</button>
+    <pre id="response"></pre>
+
+    <script>
+        document.getElementById('send').onclick = () => {
+            const message = document.getElementById('message').value;
+
+            if (!message) {
+                alert("Please enter a message.");
+                return; // Exit if no message is provided
+            }
+
+            fetch('http://localhost:3000/askChatGPT', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'An error occurred: ' + error.message;
+            });
+        };
+    </script>
+</body>
+</html>
